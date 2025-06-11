@@ -1,4 +1,4 @@
-package ch.aarboard.vamm.views;
+package ch.aarboard.vamm.ui;
 
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
