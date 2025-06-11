@@ -1,0 +1,7 @@
+@import url('./main-layout.css');
+@import url('./views/domain-management-view.css');
+@import url('./views/domains-view.css');
+@import url('./views/mail-account-view.css');
+@import url('./views/mail-alias-view.css');
+@import url('./views/account-view.css');
+@import url('./views/login-view.css');
