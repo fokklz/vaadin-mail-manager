@@ -1,0 +1,35 @@
+services:
+  openldap:
+    image: osixia/openldap
+    container_name: openldap
+    ports:
+      - "389:389"
+    environment:
+      LDAP_ORGANISATION: "Example Org"
+      LDAP_DOMAIN: "example.com"
+      LDAP_ADMIN_PASSWORD: "admin"
+      LDAP_CONFIG_PASSWORD: "config"
+      LDAP_TLS: "false"
+      LDAP_READONLY_USER: "false"
+      LDAP_SEED_INTERNAL_LDIF_PATH: "/custom-schemas"
+      LDAP_LOG_LEVEL: "256"
+    volumes:
+      - ./schemas:/custom-schemas
+      - "openldap-data:/var/lib/ldap"
+      - "openldap-config:/etc/ldap/slapd.d"
+    command: ["--loglevel", "debug"]
+
+  phpldapadmin:
+    image: osixia/phpldapadmin:latest
+    container_name: jamm-admin
+    ports:
+      - "8081:80"
+    environment:
+      - PHPLDAPADMIN_LDAP_HOSTS=openldap
+      - PHPLDAPADMIN_HTTPS=false
+    depends_on:
+      - openldap
+
+volumes:
+  openldap-data:
+  openldap-config:

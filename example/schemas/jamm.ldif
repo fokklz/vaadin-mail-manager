@@ -1,0 +1,21 @@
+dn: cn=jamm,cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: jamm
+olcAttributeTypes: ( 1.3.6.1.4.1.12461.1.1.1 NAME 'postfixTransport' DESC 'A string directing postfix which transport to use' EQUALITY caseExactIA5Match SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{20} SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.12461.1.1.2 NAME 'accountActive' DESC 'A boolean telling whether an account is active or not' EQUALITY booleanMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.12461.1.1.3 NAME 'lastChange' DESC 'Time in unix time of last change in entry' SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.12461.1.1.4 NAME 'jvd' DESC 'A virtual domain managed by Jamm' EQUALITY caseIgnoreIA5Match SUBSTR caseIgnoreIA5SubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 )
+olcAttributeTypes: ( 1.3.6.1.4.1.12461.1.1.5 NAME 'mailbox' DESC 'The absolute path to the mailbox for a mail account in a non-default location' EQUALITY caseExactIA5Match SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.12461.1.1.6 NAME 'quota' DESC 'A string that represents the quota on a mailbox' EQUALITY caseExactIA5Match SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.12461.1.1.7 NAME 'clearPassword' DESC 'A separate text that stores the mail account password in clear text' EQUALITY octetStringMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{128} )
+olcAttributeTypes: ( 1.3.6.1.4.1.12461.1.1.8 NAME 'maildrop' DESC 'RFC822 Mailbox - mail alias' EQUALITY caseIgnoreIA5Match SUBSTR caseIgnoreIA5SubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{256} )
+olcAttributeTypes: ( 1.3.6.1.4.1.12461.1.1.9 NAME 'mailsource' DESC 'Message source' EQUALITY caseIgnoreIA5Match SUBSTR caseIgnoreIA5SubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 )
+olcAttributeTypes: ( 1.3.6.1.4.1.12461.1.1.10 NAME 'editAliases' DESC 'A boolean telling whether a domain manager can edit Aliases' EQUALITY booleanMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.12461.1.1.11 NAME 'editAccounts' DESC 'A boolean telling whether a domain manager can edit Accounts' EQUALITY booleanMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.12461.1.1.12 NAME 'editPostmasters' DESC 'A boolean telling whether a domain manager can edit Postmasters' EQUALITY booleanMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.12461.1.1.13 NAME 'editCatchAlls' DESC 'A boolean telling whether a domain manager can edit CatchAlls' EQUALITY booleanMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.12461.1.1.14 NAME 'delete' DESC 'A boolean telling whether this item is marked for deletion' EQUALITY booleanMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 SINGLE-VALUE )
+olcObjectClasses: ( 1.3.6.1.4.1.12461.1.2.1 NAME 'JammMailAccount' SUP top STRUCTURAL DESC 'Mail account objects' MUST ( mail $ homeDirectory $ mailbox $ accountActive $ lastChange $ delete ) MAY ( uidNumber $ gidNumber $ uid $ cn $ description $ quota $ userPassword $ clearPassword ) )
+olcObjectClasses: ( 1.3.6.1.4.1.12461.1.2.2 NAME 'JammMailAlias' SUP top STRUCTURAL DESC 'Mail aliasing/forwarding entry' MUST ( mail $ maildrop $ accountActive $ lastChange ) MAY ( mailsource $ cn $ description $ userPassword ) )
+olcObjectClasses: ( 1.3.6.1.4.1.12461.1.2.3 NAME 'JammVirtualDomain' SUP top STRUCTURAL DESC 'Virtual Domain entry to be used with postfix transport maps' MUST ( jvd $ accountActive $ lastChange $ delete $ editAccounts $ editPostmasters ) MAY ( postfixTransport $ description ) )
+olcObjectClasses: ( 1.3.6.1.4.1.12461.1.2.4 NAME 'JammPostmaster' SUP top AUXILIARY DESC 'Added to a JammMailAlias to create a postmaster entry' MUST roleOccupant )
