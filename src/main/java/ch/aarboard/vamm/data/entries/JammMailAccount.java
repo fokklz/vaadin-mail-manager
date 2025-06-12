@@ -1,5 +1,6 @@
 package ch.aarboard.vamm.data.entries;
 
+import ch.aarboard.vamm.utils.LdapUtils;
 import ch.aarboard.vamm.utils.MailUtils;
 import ch.aarboard.vamm.utils.PasswordUtils;
 import org.springframework.ldap.odm.annotations.Attribute;
@@ -76,13 +77,7 @@ public final class JammMailAccount {
         this.mail = mail;
         this.homeDirectory = homeDirectory;
         this.mailbox = mailbox;
-        // Auto-generate DN based on mail and domain
-        String domain = MailUtils.extractDomainFromMail(mail);
-        this.id = LdapNameBuilder.newInstance()
-                .add("o", "hosting")
-                .add("jvd", domain)
-                .add("mail", mail)
-                .build();
+        this.id = LdapUtils.mailDN(mail).build();
     }
 
 

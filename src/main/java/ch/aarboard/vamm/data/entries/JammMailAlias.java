@@ -1,5 +1,6 @@
 package ch.aarboard.vamm.data.entries;
 
+import ch.aarboard.vamm.utils.LdapUtils;
 import ch.aarboard.vamm.utils.MailUtils;
 import org.springframework.ldap.odm.annotations.Attribute;
 import org.springframework.ldap.odm.annotations.Entry;
@@ -59,13 +60,7 @@ public final class JammMailAlias {
         this();
         this.mail = mail;
         this.maildrop = new ArrayList<>(destinations);
-        // Auto-generate DN based on mail and domain
-        String domain = MailUtils.extractDomainFromMail(mail);
-        this.id = LdapNameBuilder.newInstance()
-                .add("o", "hosting")
-                .add("jvd", domain)
-                .add("mail", mail)
-                .build();
+        this.id = LdapUtils.mailDN(mail).build();
     }
 
     public JammMailAlias(String mail, String... destinations) {
@@ -73,13 +68,7 @@ public final class JammMailAlias {
         this.mail = mail;
         this.maildrop = new ArrayList<>();
         Collections.addAll(this.maildrop, destinations);
-        // Auto-generate DN based on mail and domain
-        String domain = MailUtils.extractDomainFromMail(mail);
-        this.id = LdapNameBuilder.newInstance()
-                .add("o", "hosting")
-                .add("jvd", domain)
-                .add("mail", mail)
-                .build();
+        this.id = LdapUtils.mailDN(mail).build();
     }
 
     /**

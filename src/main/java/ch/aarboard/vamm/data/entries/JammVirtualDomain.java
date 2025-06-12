@@ -1,5 +1,6 @@
 package ch.aarboard.vamm.data.entries;
 
+import ch.aarboard.vamm.utils.LdapUtils;
 import org.springframework.ldap.odm.annotations.Attribute;
 import org.springframework.ldap.odm.annotations.Entry;
 import org.springframework.ldap.odm.annotations.Id;
@@ -63,10 +64,7 @@ public final class JammVirtualDomain {
     public JammVirtualDomain(String domainName) {
         this();
         this.jvd = domainName;
-        this.id = LdapNameBuilder.newInstance()
-                .add("o", "hosting")
-                .add("jvd", domainName)
-                .build();
+        this.id = LdapUtils.domainDN(domainName).build();
     }
 
     /**

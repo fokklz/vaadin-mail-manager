@@ -1,5 +1,6 @@
 package ch.aarboard.vamm.data.entries;
 
+import ch.aarboard.vamm.utils.LdapUtils;
 import ch.aarboard.vamm.utils.MailUtils;
 import org.springframework.ldap.odm.annotations.Attribute;
 import org.springframework.ldap.odm.annotations.Entry;
@@ -73,11 +74,7 @@ public final class JammPostmaster {
         this.roleOccupant.add(defaultRoleOccupant);
 
         // Auto-generate DN for postmaster
-        this.id = LdapNameBuilder.newInstance()
-                .add("o", "hosting")
-                .add("jvd", domain)
-                .add("cn", "postmaster")
-                .build();
+        this.id = LdapUtils.postmasterDN(domain).build();
     }
 
     public JammPostmaster(String domain, List<String> destinations) {
