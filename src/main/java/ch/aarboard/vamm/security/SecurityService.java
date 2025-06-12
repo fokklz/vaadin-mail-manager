@@ -1,16 +1,30 @@
 package ch.aarboard.vamm.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class SecurityService {
+
+    private Environment environment;
+
+    public SecurityService(@Autowired Environment environment) {
+        this.environment = environment;
+    }
+
+    public boolean isTestMode() {
+        return environment.getActiveProfiles().length > 0 &&
+                Arrays.asList(environment.getActiveProfiles()).contains("test");
+    }
 
     /**
      * Get the current authentication object
