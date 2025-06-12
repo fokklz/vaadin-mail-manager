@@ -4,6 +4,11 @@ import org.springframework.ldap.support.LdapNameBuilder;
 
 public class LdapUtils {
 
+    public static final String JAMM_MAIL_ACCOUNT = "JammMailAccount";
+    public static final String JAMM_MAIL_ALIAS = "JammMailAlias";
+    public static final String JAMM_VIRTUAL_DOMAIN = "JammVirtualDomain";
+    public static final String JAMM_POSTMASTER = "JammPostmaster";
+
     /**
      * Builds a base LDAP name for the application.
      *
@@ -20,11 +25,10 @@ public class LdapUtils {
      * @return LdapNameBuilder with the domain added, or the base DN if the domain is null or empty
      */
     public static LdapNameBuilder domainDN(String domain) {
-        var base = baseDN();
         if (domain == null || domain.isEmpty()) {
-            return base;
+            throw new IllegalArgumentException("Domain cannot be null or empty");
         }
-        return base.add("jvd", domain);
+        return baseDN().add("jvd", domain);
     }
 
     /**
@@ -36,15 +40,14 @@ public class LdapUtils {
      */
     public static LdapNameBuilder mailDN(String domain, String mail) {
         if (domain == null || domain.isEmpty()) {
-            return baseDN();
+            throw new IllegalArgumentException("Domain cannot be null or empty");
         }
-
-        var base = domainDN(domain);
 
         if (mail == null || mail.isEmpty()) {
-            return base;
+            throw new IllegalArgumentException("Mail cannot be null or empty");
         }
-        return base.add("mail", mail);
+
+        return domainDN(domain).add("mail", mail);
     }
 
     /**
@@ -55,7 +58,7 @@ public class LdapUtils {
      */
     public static LdapNameBuilder mailDN(String mail) {
         if (mail == null || mail.isEmpty()) {
-            return baseDN();
+            throw new IllegalArgumentException("Mail cannot be null or empty");
         }
         String domain = MailUtils.extractDomainFromMail(mail);
         return mailDN(domain, mail);
@@ -68,7 +71,7 @@ public class LdapUtils {
      */
     public static LdapNameBuilder postmasterDN(String domain) {
         if (domain == null || domain.isEmpty()) {
-            return baseDN();
+            throw new IllegalArgumentException("Domain cannot be null or empty");
         }
         return domainDN(domain).add("cn", "postmaster");
     }

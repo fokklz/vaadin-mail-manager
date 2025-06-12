@@ -4,23 +4,29 @@ import ch.aarboard.vamm.config.LdapConfig;
 import ch.aarboard.vamm.data.entries.JammMailAccount;
 import ch.aarboard.vamm.data.entries.JammMailAlias;
 import ch.aarboard.vamm.data.entries.JammPostmaster;
-import ch.aarboard.vamm.data.repositories.JammMailAccountRepository;
-import ch.aarboard.vamm.data.repositories.JammMailAliasRepository;
-import ch.aarboard.vamm.data.repositories.JammPostmasterRepository;
-import ch.aarboard.vamm.data.repositories.JammVirtualDomainRepository;
 import ch.aarboard.vamm.security.SecurityService;
 import ch.aarboard.vamm.data.entries.JammVirtualDomain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.ldap.odm.core.impl.DefaultObjectDirectoryMapper;
+import org.springframework.ldap.support.LdapNameBuilder;
 import org.springframework.stereotype.Service;
 
+import javax.naming.Name;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
+import javax.naming.directory.BasicAttributes;
 import java.util.Map;
 
 @Service
 public class LdapSessionManager {
+
+    private static final Logger logger = LoggerFactory.getLogger(LdapSessionManager.class);
 
     private final LdapConfig ldapConfig;
     private final SecurityService securityService;
@@ -83,6 +89,34 @@ public class LdapSessionManager {
         odm.manageClass(JammVirtualDomain.class);
 
         template.setObjectDirectoryMapper(odm);
+
+        var orgDn = LdapNameBuilder.newInstance().add("o", "hosting").build();
+        if (!doesOrganizationExist(template, orgDn)){
+            Attributes attributes = new BasicAttributes();
+
+            // Add object classes
+            BasicAttribute objectClass = new BasicAttribute("objectClass");
+            objectClass.add("top");
+            objectClass.add("organization");
+            attributes.put(objectClass);
+
+            // Add organization name
+            attributes.put(new BasicAttribute("o", "hosting"));
+
+            template.bind(orgDn, null, attributes);
+        }
+
         return template;
     }
+
+
+    public boolean doesOrganizationExist(LdapTemplate template, Name orgDn) {
+        try {
+            return template.lookup(orgDn) != null;
+        } catch (Exception e) {
+            logger.debug("Organization does not exist: {}", e.getMessage());
+            return false;
+        }
+    }
+
 }
