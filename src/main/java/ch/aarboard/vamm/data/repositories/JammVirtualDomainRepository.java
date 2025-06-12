@@ -82,7 +82,7 @@ public class JammVirtualDomainRepository implements IJammVirtualDomainRepository
         try {
             List<JammVirtualDomain> domains = ldapSessionManager.createUserLdapTemplate().find(
                     LdapQueryBuilder.query()
-                            .where("objectClass").is(JammVirtualDomain.class.getName())
+                            .where("objectClass").is(LdapUtils.JAMM_VIRTUAL_DOMAIN)
                             .and("accountActive").is("FALSE"),
                     JammVirtualDomain.class
             );
@@ -99,7 +99,7 @@ public class JammVirtualDomainRepository implements IJammVirtualDomainRepository
         try {
             List<JammVirtualDomain> domains = ldapSessionManager.createUserLdapTemplate().find(
                     LdapQueryBuilder.query()
-                            .where("objectClass").is(JammVirtualDomain.class.getName())
+                            .where("objectClass").is(LdapUtils.JAMM_VIRTUAL_DOMAIN)
                             .and("delete").is("TRUE"),
                     JammVirtualDomain.class
             );
@@ -116,7 +116,7 @@ public class JammVirtualDomainRepository implements IJammVirtualDomainRepository
         try {
             List<JammVirtualDomain> domains = ldapSessionManager.createUserLdapTemplate().find(
                     LdapQueryBuilder.query()
-                            .where("objectClass").is(JammVirtualDomain.class.getName())
+                            .where("objectClass").is(LdapUtils.JAMM_VIRTUAL_DOMAIN)
                             .and("accountActive").is("TRUE"),
                     JammVirtualDomain.class
             );
@@ -138,19 +138,15 @@ public class JammVirtualDomainRepository implements IJammVirtualDomainRepository
         domain.updateLastChange();
 
         try {
-            JammMailAccount existing = null;
-            try {
-                existing = ldapSessionManager.createUserLdapTemplate().findByDn(domain.getId(), JammMailAccount.class);
-            } catch (Exception ignored) { }
+            var domainOpt = findByName(domain.getJvd());
 
-            if (existing != null) {
+            if (domainOpt.isPresent()) {
                 ldapSessionManager.createUserLdapTemplate().update(domain);
                 log.debug("Successfully updated domain: {}", domain.getJvd());
             } else {
                 ldapSessionManager.createUserLdapTemplate().create(domain);
                 log.debug("Successfully created domain: {}", domain.getJvd());
             }
-
             return domain;
         } catch (Exception e) {
             log.debug("Error saving domain {}: {}", domain.getJvd(), e.getMessage());

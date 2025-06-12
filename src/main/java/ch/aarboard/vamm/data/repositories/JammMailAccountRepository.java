@@ -31,7 +31,7 @@ public class JammMailAccountRepository implements IJammMailAccountRepository {
         try {
             return ldapSessionManager.createUserLdapTemplate().find(
                     LdapQueryBuilder.query()
-                            .where("objectClass").is("JammMailAccount"),
+                            .where("objectClass").is(LdapUtils.JAMM_MAIL_ACCOUNT),
                     JammMailAccount.class
             );
         } catch (Exception e) {
@@ -120,7 +120,7 @@ public class JammMailAccountRepository implements IJammMailAccountRepository {
             return ldapSessionManager.createUserLdapTemplate().find(
                     LdapQueryBuilder.query()
                             .base(baseDn)
-                            .where("objectClass").is("JammMailAccount"),
+                            .where("objectClass").is(LdapUtils.JAMM_MAIL_ACCOUNT),
                     JammMailAccount.class
             );
         } catch (Exception e) {
@@ -142,7 +142,7 @@ public class JammMailAccountRepository implements IJammMailAccountRepository {
             return ldapSessionManager.createUserLdapTemplate().find(
                     LdapQueryBuilder.query()
                             .base(baseDn)
-                            .where("objectClass").is("JammMailAccount")
+                            .where("objectClass").is(LdapUtils.JAMM_MAIL_ACCOUNT)
                             .and("mail").like(prefix + "*"),
                     JammMailAccount.class
             );
@@ -165,7 +165,7 @@ public class JammMailAccountRepository implements IJammMailAccountRepository {
             return ldapSessionManager.createUserLdapTemplate().find(
                     LdapQueryBuilder.query()
                             .base(baseDn)
-                            .where("objectClass").is("JammMailAccount")
+                            .where("objectClass").is(LdapUtils.JAMM_MAIL_ACCOUNT)
                             .and("accountActive").is("FALSE"),
                     JammMailAccount.class
             );
@@ -188,7 +188,7 @@ public class JammMailAccountRepository implements IJammMailAccountRepository {
             return ldapSessionManager.createUserLdapTemplate().find(
                     LdapQueryBuilder.query()
                             .base(baseDn)
-                            .where("objectClass").is("JammMailAccount")
+                            .where("objectClass").is(LdapUtils.JAMM_MAIL_ACCOUNT)
                             .and("delete").is("TRUE"),
                     JammMailAccount.class
             );
@@ -227,7 +227,7 @@ public class JammMailAccountRepository implements IJammMailAccountRepository {
             return ldapSessionManager.createUserLdapTemplate().find(
                     LdapQueryBuilder.query()
                             .base(baseDn)
-                            .where("objectClass").is("JammMailAccount")
+                            .where("objectClass").is(LdapUtils.JAMM_MAIL_ACCOUNT)
                             .and("mail").like("*" + LdapUtils.escape(searchTerm) + "*"),
                     JammMailAccount.class
             );

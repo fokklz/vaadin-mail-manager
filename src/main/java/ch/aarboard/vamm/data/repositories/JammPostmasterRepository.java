@@ -36,14 +36,9 @@ public class JammPostmasterRepository implements IJammPostmasterRepository {
 
         try {
             Name baseDn = LdapUtils.postmasterDN(domain).build();
-            JammPostmaster postmaster = ldapSessionManager.createUserLdapTemplate().findOne(
-                    LdapQueryBuilder.query()
-                            .base(baseDn)
-                            .where("objectClass").is(JammPostmaster.class.getName()),
-                    JammPostmaster.class
-            );
+            JammPostmaster postmaster = ldapSessionManager.createUserLdapTemplate().findByDn(baseDn, JammPostmaster.class);
 
-            return Optional.of(postmaster);
+            return Optional.ofNullable(postmaster);
         } catch (Exception e) {
             log.error("Error finding accounts by domain {}: {}", domain, e.getMessage());
             return Optional.empty();
@@ -60,6 +55,7 @@ public class JammPostmasterRepository implements IJammPostmasterRepository {
         try {
             findByDomain(domain).ifPresent(postmaster -> {
                 postmaster.setRoleOccupant(List.of());
+                save(postmaster);
                 log.debug("Removed role occupants from postmaster for domain {}", domain);
             });
         } catch (Exception e) {
@@ -69,23 +65,29 @@ public class JammPostmasterRepository implements IJammPostmasterRepository {
 
     @Override
     public List<String> findRoleOccupantsByDomain(String domain) {
-        List<String> retVal = new ArrayList<>();
-
         if (domain == null || domain.isEmpty()) {
             log.debug("Domain is null or empty, cannot find role occupants.");
-            return retVal;
+            return List.of();
         }
+//
+//        var domainOpt =  findByDomain(domain);
+//
+//        var baseDn = LdapUtils.domainDN(domain).build();
+//        var filter = LdapQueryBuilder.query().base(baseDn).where("cn").is("postmaster");
+//        List<JammPostmaster> postmaster = ldapSessionManager.createUserLdapTemplate()
+//                .find(filter, JammPostmaster.class);
+//
+//        return postmaster.size() > 0 ? postmaster.get(0).getRoleOccupants() : List.of();
 
-        findByDomain(domain).ifPresentOrElse(
-                postmaster -> {
+        return findByDomain(domain)
+                .map(postmaster -> {
                     log.debug("Found postmaster for domain {}: {}", domain, postmaster.getMail());
-                    retVal.addAll(postmaster.getRoleOccupants());
-                },
-                () -> {
+                    return postmaster.getRoleOccupants();
+                })
+                .orElseGet(() -> {
                     log.debug("No postmaster found for domain {}", domain);
-                }
-        );
-        return retVal;
+                    return List.of();
+                });
     }
 
     @Override
@@ -114,11 +116,11 @@ public class JammPostmasterRepository implements IJammPostmasterRepository {
 
         try {
             return ldapSessionManager.createUserLdapTemplate().find(
-                    LdapQueryBuilder.query()
-                            .where("objectClass").is(JammPostmaster.class.getName())
-                            .and("roleOccupants").like("*" + userDn + "*"),
+                            LdapQueryBuilder.query()
+                                    .where("objectClass").is(LdapUtils.JAMM_POSTMASTER)
+                                    .and("roleOccupant").is(userDn),
                     JammPostmaster.class
-            ).stream()
+                    ).stream()
                     .map(JammPostmaster::getDomain)
                     .toList();
         } catch (Exception e) {
@@ -137,8 +139,8 @@ public class JammPostmasterRepository implements IJammPostmasterRepository {
         try {
             return ldapSessionManager.createUserLdapTemplate().find(
                     LdapQueryBuilder.query()
-                            .where("objectClass").is(JammPostmaster.class.getName())
-                            .and("roleOccupants").like("*" + userDn + "*"),
+                            .where("objectClass").is(LdapUtils.JAMM_POSTMASTER)
+                            .and("roleOccupant").is(userDn),
                     JammPostmaster.class
             );
         } catch (Exception e) {

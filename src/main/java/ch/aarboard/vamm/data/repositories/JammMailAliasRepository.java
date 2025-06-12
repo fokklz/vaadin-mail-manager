@@ -103,7 +103,7 @@ public class JammMailAliasRepository implements IJammMailAliasRepository {
             return ldapSessionManager.createUserLdapTemplate().find(
                     LdapQueryBuilder.query()
                             .base(baseDn)
-                            .where("objectClass").is("JammMailAlias"),
+                            .where("objectClass").is(LdapUtils.JAMM_MAIL_ALIAS),
                     JammMailAlias.class
             );
         } catch (Exception e) {
@@ -125,7 +125,7 @@ public class JammMailAliasRepository implements IJammMailAliasRepository {
             return ldapSessionManager.createUserLdapTemplate().find(
                     LdapQueryBuilder.query()
                             .base(baseDn)
-                            .where("objectClass").is("JammMailAlias")
+                            .where("objectClass").is(LdapUtils.JAMM_MAIL_ALIAS)
                             .and("systemAlias").is("FALSE"),
                     JammMailAlias.class
             );
@@ -180,7 +180,7 @@ public class JammMailAliasRepository implements IJammMailAliasRepository {
             return ldapSessionManager.createUserLdapTemplate().find(
                     LdapQueryBuilder.query()
                             .base(baseDn)
-                            .where("objectClass").is("JammMailAlias")
+                            .where("objectClass").is(LdapUtils.JAMM_MAIL_ALIAS)
                             .and("systemAlias").is("TRUE"),
                     JammMailAlias.class
             );
@@ -210,7 +210,7 @@ public class JammMailAliasRepository implements IJammMailAliasRepository {
             return ldapSessionManager.createUserLdapTemplate().find(
                     LdapQueryBuilder.query()
                             .base(baseDn)
-                            .where("objectClass").is("JammMailAlias")
+                            .where("objectClass").is(LdapUtils.JAMM_MAIL_ALIAS)
                             .and("mail").like("*" + LdapUtils.escape(searchTerm) + "*"),
                     JammMailAlias.class
             );
