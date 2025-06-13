@@ -56,10 +56,15 @@ public final class JammMailAlias {
         this.maildrop = new ArrayList<>();
     }
 
-    public JammMailAlias(String mail, List<String> destinations) {
+    public JammMailAlias(String mail, List<String> destinations, String commonName) {
         this();
         this.mail = mail;
         this.maildrop = new ArrayList<>(destinations);
+        if (commonName != null && !commonName.isEmpty()) {
+            this.commonName = commonName;
+        } else {
+            this.commonName = MailUtils.extractUserFromMail(mail);
+        }
         this.id = LdapUtils.mailDN(mail).build();
     }
 
@@ -68,6 +73,7 @@ public final class JammMailAlias {
         this.mail = mail;
         this.maildrop = new ArrayList<>();
         Collections.addAll(this.maildrop, destinations);
+        this.commonName = MailUtils.extractUserFromMail(mail);
         this.id = LdapUtils.mailDN(mail).build();
     }
 

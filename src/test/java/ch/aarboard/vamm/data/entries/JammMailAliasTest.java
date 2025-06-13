@@ -14,6 +14,7 @@ class JammMailAliasTest {
 
     private static final String TEST_MAIL = "alias@example.com";
     private static final String TEST_CATCH_ALL = "@example.com";
+    private static final String TEST_COMMON_NAME = "Test Alias";
     private static final List<String> TEST_DESTINATIONS = Arrays.asList("user1@example.com", "user2@example.com");
 
     void time(){
@@ -32,10 +33,11 @@ class JammMailAliasTest {
 
     @Test
     void constructorWithMailAndListDestinationsSetsCorrectValues() {
-        JammMailAlias alias = new JammMailAlias(TEST_MAIL, TEST_DESTINATIONS);
+        JammMailAlias alias = new JammMailAlias(TEST_MAIL, TEST_DESTINATIONS, TEST_COMMON_NAME);
 
         assertEquals(TEST_MAIL, alias.getMail());
         assertEquals(TEST_DESTINATIONS.size(), alias.getMaildrop().size());
+        assertEquals(TEST_COMMON_NAME, alias.getCommonName());
         assertTrue(alias.getMaildrop().containsAll(TEST_DESTINATIONS));
 
         Name expectedDn = LdapNameBuilder.newInstance()
@@ -117,7 +119,7 @@ class JammMailAliasTest {
 
     @Test
     void removeDestinationRemovesExistingDestination() {
-        JammMailAlias alias = new JammMailAlias(TEST_MAIL, TEST_DESTINATIONS);
+        JammMailAlias alias = new JammMailAlias(TEST_MAIL, TEST_DESTINATIONS, TEST_COMMON_NAME);
         String originalLastChange = alias.getLastChange();
         time();
 
@@ -134,7 +136,7 @@ class JammMailAliasTest {
 
     @Test
     void getDestinationsReturnsUnmodifiableList() {
-        JammMailAlias alias = new JammMailAlias(TEST_MAIL, TEST_DESTINATIONS);
+        JammMailAlias alias = new JammMailAlias(TEST_MAIL, TEST_DESTINATIONS, TEST_COMMON_NAME);
 
         List<String> destinations = alias.getDestinations();
         assertEquals(TEST_DESTINATIONS.size(), destinations.size());
