@@ -1,4 +1,4 @@
-package ch.aarboard.vamm.ui;
+package ch.aarboard.vamm.ui.layouts;
 
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -7,6 +7,7 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.SvgIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
@@ -24,6 +25,7 @@ import java.util.List;
 @AnonymousAllowed
 public class MainLayout extends AppLayout {
 
+    private HorizontalLayout breadcrumbLayout;
     private H1 viewTitle;
 
     public MainLayout() {

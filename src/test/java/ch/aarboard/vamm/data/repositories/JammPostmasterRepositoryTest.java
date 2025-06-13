@@ -1,5 +1,6 @@
 package ch.aarboard.vamm.data.repositories;
 
+import ch.aarboard.vamm.base.AbstractRepositoryTest;
 import ch.aarboard.vamm.data.entries.JammPostmaster;
 import ch.aarboard.vamm.data.entries.JammVirtualDomain;
 import org.junit.jupiter.api.MethodOrderer;

@@ -1,7 +1,7 @@
 package ch.aarboard.vamm.config;
 
 import ch.aarboard.vamm.security.LdapAuthenticationProvider;
-import ch.aarboard.vamm.ui.views.LoginView;
+import ch.aarboard.vamm.ui.views.security.LoginView;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
