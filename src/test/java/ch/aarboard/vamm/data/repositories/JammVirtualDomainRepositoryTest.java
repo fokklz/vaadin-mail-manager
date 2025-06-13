@@ -57,7 +57,6 @@ public class JammVirtualDomainRepositoryTest extends AbstractRepositoryTest {
     @Test
     @Order(4)
     public void testFindAll() {
-        // Erstellen einer zweiten Domain für den Test
         JammVirtualDomain secondDomain = new JammVirtualDomain(SECOND_DOMAIN);
         virtualDomainRepository.save(secondDomain);
 

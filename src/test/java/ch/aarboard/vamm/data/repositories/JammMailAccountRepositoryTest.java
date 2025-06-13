@@ -47,13 +47,11 @@ public class JammMailAccountRepositoryTest extends AbstractRepositoryTest {
     @Test
     @Order(2)
     public void testFindMailAccount() {
-        // Suchen des Mail-Accounts nach E-Mail
         Optional<JammMailAccount> foundAccount = mailAccountRepository.findByEmail(TEST_EMAIL);
 
         assertTrue(foundAccount.isPresent());
         assertEquals(TEST_EMAIL, foundAccount.get().getMail());
 
-        // Alle Mail-Accounts finden
         List<JammMailAccount> allAccounts = mailAccountRepository.findAll();
         assertFalse(allAccounts.isEmpty());
         assertTrue(allAccounts.stream().anyMatch(acc -> TEST_EMAIL.equals(acc.getMail())));
@@ -62,7 +60,6 @@ public class JammMailAccountRepositoryTest extends AbstractRepositoryTest {
     @Test
     @Order(3)
     public void testUpdateMailAccount() {
-        // Account aktualisieren
         Optional<JammMailAccount> accountToUpdate = mailAccountRepository.findByEmail(TEST_EMAIL);
         assertTrue(accountToUpdate.isPresent());
 
@@ -78,18 +75,15 @@ public class JammMailAccountRepositoryTest extends AbstractRepositoryTest {
     @Test
     @Order(4)
     public void testDeleteMailAccount() {
-        // Account löschen
         Optional<JammMailAccount> accountToDelete = mailAccountRepository.findByEmail(TEST_EMAIL);
         assertTrue(accountToDelete.isPresent());
 
         mailAccountRepository.delete(accountToDelete.get());
 
-        // Überprüfen, dass der Account gelöscht wurde
         Optional<JammMailAccount> deletedAccount = mailAccountRepository.findByEmail(TEST_EMAIL);
         assertFalse(deletedAccount.isPresent());
 
         if (virtualDomainRepository.existsByName("example.com")) {
-            // Remove the virtual domain again
             virtualDomainRepository.deleteByName("example.com");
         }
     }
