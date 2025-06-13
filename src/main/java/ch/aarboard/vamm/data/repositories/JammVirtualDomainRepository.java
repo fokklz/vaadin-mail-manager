@@ -51,7 +51,7 @@ public class JammVirtualDomainRepository implements IJammVirtualDomainRepository
             JammVirtualDomain domain = ldapSessionManager.createUserLdapTemplate().findByDn(dn, JammVirtualDomain.class);
             return Optional.of(domain);
         } catch (Exception e) {
-            log.error("Error checking existence of domain {}: {}", domainName, e.getMessage());
+            log.error("Error finding domain {}: {}", domainName, e.getMessage());
             return Optional.empty();
         }
     }
