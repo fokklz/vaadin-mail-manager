@@ -36,8 +36,11 @@ public class BreadcrumbLayout extends VerticalLayout {
     }
 
     private Anchor createAnchor(BreadcrumbItem item) {
-        Anchor anchor = new Anchor(item.getHref(), item.getText());
+        Anchor anchor = new Anchor(item.getHref(), item.getText() != null ? item.getText() : "");
         anchor.addClassNames(LumoUtility.TextColor.PRIMARY);
+        if(item.getHref() == null || item.getHref().isEmpty()) {
+            anchor.setEnabled(false);
+        }
         return anchor;
     }
 
