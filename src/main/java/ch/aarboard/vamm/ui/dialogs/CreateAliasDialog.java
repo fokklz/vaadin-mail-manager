@@ -1,5 +1,6 @@
 package ch.aarboard.vamm.ui.dialogs;
 
+import ch.aarboard.vamm.events.DomainContentChangedEvent;
 import ch.aarboard.vamm.services.JammMailAliasManagemeentService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -16,6 +17,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,7 @@ public class CreateAliasDialog extends Dialog {
 
     private final JammMailAliasManagemeentService aliasManagementService;
     private final Runnable onSuccess;
+    private final ApplicationEventPublisher eventPublisher;
 
     private final TextField aliasEmailField;
     private final VerticalLayout destinationsLayout;
@@ -33,9 +36,10 @@ public class CreateAliasDialog extends Dialog {
     private String selectedDomain;
     private final List<TextField> destinationFields = new ArrayList<>();
 
-    public CreateAliasDialog(JammMailAliasManagemeentService aliasManagementService, Runnable onSuccess) {
+    public CreateAliasDialog(JammMailAliasManagemeentService aliasManagementService, Runnable onSuccess, ApplicationEventPublisher eventPublisher) {
         this.aliasManagementService = aliasManagementService;
         this.onSuccess = onSuccess;
+        this.eventPublisher = eventPublisher;
 
         setModal(true);
         setDraggable(true);
@@ -174,6 +178,7 @@ public class CreateAliasDialog extends Dialog {
 
             close();
             clearForm();
+            eventPublisher.publishEvent(new DomainContentChangedEvent(this, selectedDomain, DomainContentChangedEvent.ContentType.ALIAS_CREATED));
             if (onSuccess != null) {
                 onSuccess.run();
             }

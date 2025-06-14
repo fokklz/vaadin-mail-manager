@@ -1,5 +1,6 @@
 package ch.aarboard.vamm.ui.dialogs;
 
+import ch.aarboard.vamm.events.DomainContentChangedEvent;
 import ch.aarboard.vamm.services.JammMailAccountManagementService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -14,11 +15,13 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import org.springframework.context.ApplicationEventPublisher;
 
 public class CreateAccountDialog extends Dialog {
 
     private final JammMailAccountManagementService accountService;
     private final Runnable onSuccess;
+    private final ApplicationEventPublisher eventPublisher;
 
     private final TextField emailField;
     private final PasswordField passwordField;
@@ -27,9 +30,10 @@ public class CreateAccountDialog extends Dialog {
 
     private String selectedDomain;
 
-    public CreateAccountDialog(JammMailAccountManagementService accountService, Runnable onSuccess) {
+    public CreateAccountDialog(JammMailAccountManagementService accountService, Runnable onSuccess, ApplicationEventPublisher eventPublisher) {
         this.accountService = accountService;
         this.onSuccess = onSuccess;
+        this.eventPublisher = eventPublisher;
 
         setModal(true);
         setDraggable(true);
@@ -92,7 +96,7 @@ public class CreateAccountDialog extends Dialog {
             accountService.createAccount(
                     email,
                     passwordField.getValue(),
-                    null,
+                    null, // Use default home directory
                     quotaField.getValue().trim().isEmpty() ? null : quotaField.getValue(),
                     descriptionField.getValue().trim().isEmpty() ? null : descriptionField.getValue()
             );
@@ -102,6 +106,7 @@ public class CreateAccountDialog extends Dialog {
 
             close();
             clearForm();
+            eventPublisher.publishEvent(new DomainContentChangedEvent(this, selectedDomain, DomainContentChangedEvent.ContentType.ACCOUNT_CREATED));
             if (onSuccess != null) {
                 onSuccess.run();
             }
