@@ -8,9 +8,11 @@ import ch.aarboard.vamm.data.repositories.JammPostmasterRepository;
 import ch.aarboard.vamm.data.repositories.JammVirtualDomainRepository;
 import ch.aarboard.vamm.utils.MailUtils;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class JammVirtualDomainManagementService {
 
     private JammVirtualDomainRepository virtualDomainRepository;
